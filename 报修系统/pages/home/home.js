@@ -1,120 +1,67 @@
-// var app = getApp()
+const { SUPPORT_PHONE } = require('../../utils/config.js')
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    name:'',
+    name: '',
     gender: '',
-    image_url:''
-  },
-  userInfoHandler(){
-  var that = this
-        wx.getSetting({
-          success(res) {
-            if (res.authSetting['scope.userInfo']) {
-              // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-              wx.getUserInfo({
-                lang: 'zh_CN',
-                success(res) {
-                  wx.setStorage({
-                    key: 'key',
-                    data: res.userInfo
-                  })
-               
-               that.setData({
-                 name: res.userInfo.nickName,
-                 gender: res.userInfo.gender,
-                 image_url: res.userInfo.avatarUrl
-               })
-                }
-              })
-            }
-          }
-        })
-},
-//联系电话
-tel(){
-  wx.makePhoneCall({
-    phoneNumber: '13034003710'
-  })
-},
-//详细资料
-content(){
-  wx.navigateTo({
-    url: '/pages/me/me'
-  })
-},
-  //报修记录
-  all() {
-    wx.navigateTo({
-      url: '/pages/all/all'
-    })
-  },
-  //维修状态
-  loading() {
-    wx.navigateTo({
-      url: '/pages/loading/loading'
-    })
-  },
-  //已完成的报修
-  task() {
-    wx.navigateTo({
-      url: '/pages/task/task'
-    })
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-  
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
+    image_url: '',
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow: function () {
-
+    var that = this
+    wx.getSetting({
+      success: function (res) {
+        // 未授权时 WXML 已渲染登录按钮，无需额外提示
+        if (!res.authSetting['scope.userInfo']) return
+        wx.getUserInfo({
+          lang: 'zh_CN',
+          success: function (res) {
+            wx.setStorage({ key: 'key', data: res.userInfo })
+            that.setData({
+              name: res.userInfo.nickName,
+              gender: res.userInfo.gender,
+              image_url: res.userInfo.avatarUrl,
+            })
+          },
+        })
+      },
+    })
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
+  userInfoHandler: function () {
+    var that = this
+    wx.getUserInfo({
+      lang: 'zh_CN',
+      success: function (res) {
+        wx.setStorage({ key: 'key', data: res.userInfo })
+        that.setData({
+          name: res.userInfo.nickName,
+          gender: res.userInfo.gender,
+          image_url: res.userInfo.avatarUrl,
+        })
+      },
+    })
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
+  tel: function () {
+    wx.makePhoneCall({ phoneNumber: SUPPORT_PHONE })
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
+  content: function () {
+    wx.navigateTo({ url: '/pages/me/me' })
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
+  all: function () {
+    wx.navigateTo({ url: '/pages/all/all' })
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
+  loading: function () {
+    wx.navigateTo({ url: '/pages/loading/loading' })
+  },
 
-  }
+  task: function () {
+    wx.navigateTo({ url: '/pages/task/task' })
+  },
+
+  onShareAppMessage: function () {},
 })
